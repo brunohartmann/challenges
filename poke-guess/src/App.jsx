@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import pokeApi from './api';
 
@@ -8,10 +8,13 @@ const STATUS = {
   END: 'END'
 };
 
+const MAX_ATTEMPTS = 5;
+
 const App = () => {
   const [pokemon, setPokemon] = useState(null);
   const [status, setStatus] = useState(STATUS.START);
   const [buffer, setBuffer] = useState('');
+  const [attempts, setAttempts] = useState(0);
 
   const handleStart = async () => {
     const randomPokemon = await pokeApi.random();
@@ -24,10 +27,24 @@ const App = () => {
     const { pokemon: guess } = event.target;
     if (guess.value.trim().toLowerCase() === pokemon.name) {
       setStatus(STATUS.END);
+      setAttempts(0);
       alert('Correct!');
+    } else {
+      setAttempts((prev) => prev + 1);
     }
     setBuffer('');
   };
+
+  useEffect(() => {
+    const fetchPokemon = async () => {
+      const randomPokemon = await pokeApi.random();
+      setPokemon(randomPokemon);
+      setAttempts(0);
+    };
+    if (attempts === MAX_ATTEMPTS) {
+      fetchPokemon();
+    }
+  }, [attempts]);
 
   return (
     <main>
