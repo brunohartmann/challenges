@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Press Start 2P', cursive, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -16,26 +16,12 @@
 }
 
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
 main {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   flex-direction: column;
-  padding: 24px;
 }
 
 * {
@@ -46,19 +32,68 @@ main {
 
 img {
   image-rendering: pixelated;
-  width: 512px;
-  height: 512px;
-}
-
-form {
-  width: 100%;
 }
 
 input, button {
-  font-size: 32px;
+  font-size: 24px;
 }
 
 button {
   width: fit-content;
   padding: 4px 8px
 }
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.forest {
+  position: absolute;
+  background-image: url("./assets/forest.jpg");
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hidden {
+  filter: brightness(0)
+}
+
+.arena {
+  width: 100%
+}
+
+.pokemon {
+  position: absolute;
+  height: 35vh;
+  top: 15%;
+  right: 20%;
+}
+
+
+.form {
+  position: absolute;
+  background-color: white;
+  left: 12px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.play {
+  margin: auto;
+}
+
+@media screen and (max-width: 950px) {
+  .pokemon {
+    right: 5%
+  }
+};

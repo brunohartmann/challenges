@@ -48,40 +48,37 @@ const App = () => {
 
   return (
     <main>
-      {status !== STATUS.PLAYING && (
-        <div>
-          <button onClick={handleStart}> {status === STATUS.START ? 'Start' : 'Play again'}</button>
+      <div className="container">
+        <div className="forest" />
+        <div className="nes-container with-title is-dark is-centered is-rounded">
+          <div className="nes-container is-centered is-rounded">
+            <p className="title">Poke Guess</p>
+          </div>
         </div>
-      )}
-      {status !== STATUS.START && (
-        <div>
-          <img
-            src={pokemon.image}
-            style={{
-              filter: status === STATUS.PLAYING ? 'brightness(0) invert(1)' : 'none'
-            }}
-          />
-          {status === STATUS.PLAYING && (
-            <form
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12
-              }}
-              onSubmit={handleSubmit}
-            >
-              <input autoFocus name="pokemon" type="text" value={buffer} onChange={(e) => setBuffer(e.target.value)} />
-              <button
-                style={{
-                  margin: 'auto'
-                }}
-              >
-                Submit
-              </button>
-            </form>
-          )}
-        </div>
-      )}
+        {status !== STATUS.START && (
+          <div className="arena">
+            <img alt="pokemon" className={`pokemon ${status === STATUS.PLAYING ? 'hidden' : ''}`} src={pokemon.image} />
+            {status === STATUS.PLAYING && (
+              <form className="nes-container is-white is-centered is-rounded form" onSubmit={handleSubmit}>
+                <input
+                  autoFocus
+                  className="nes-input"
+                  name="pokemon"
+                  type="text"
+                  value={buffer}
+                  onChange={(e) => setBuffer(e.target.value)}
+                />
+                <button className="nes-btn is-primary">Submit</button>
+              </form>
+            )}
+          </div>
+        )}
+        {status !== STATUS.PLAYING && (
+          <button className="nes-btn is-primary play" onClick={handleStart}>
+            {status === STATUS.START ? 'Start' : 'Play again'}
+          </button>
+        )}
+      </div>
     </main>
   );
 };
