@@ -57,7 +57,7 @@ const App = () => {
         </div>
         {status !== STATUS.START && (
           <div className="arena">
-            <img alt="pokemon" className={`pokemon ${status === STATUS.PLAYING ? 'hidden' : ''}`} src={pokemon.image} />
+            <img alt="pokemon" className={`pokemon ${status === STATUS.PLAYING ? 'hidden' : ''}`} src={pokemon.gif} />
             {status === STATUS.PLAYING && (
               <form className="nes-container is-white is-centered is-rounded form" onSubmit={handleSubmit}>
                 <input

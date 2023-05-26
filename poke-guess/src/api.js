@@ -27,7 +27,7 @@ const POKEMON = [
   'raichu',
   'sandshrew',
   'sandslash',
-  'nidoran♀',
+  'nidoran',
   'nidorina',
   'nidoqueen',
   'nidoran♂',
@@ -81,7 +81,7 @@ const POKEMON = [
   'slowbro',
   'magnemite',
   'magneton',
-  "farfetch'd",
+  'farfetchd',
   'doduo',
   'dodrio',
   'seel',
@@ -155,11 +155,13 @@ const POKEMON = [
 const api = {
   random: async () => {
     const id = Math.round(Math.random() * (POKEMON.length - 1) + 1);
+    const name = POKEMON[id - 1];
 
     return {
       id: id,
-      name: POKEMON[id - 1],
-      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+      name,
+      image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+      gif: `https://img.pokemondb.net/sprites/black-white/anim/normal/${name}.gif`
     };
   }
 };
