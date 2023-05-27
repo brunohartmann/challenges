@@ -68,7 +68,7 @@ const App = () => {
                   value={buffer}
                   onChange={(e) => setBuffer(e.target.value)}
                 />
-                <button className="nes-btn is-primary">Submit</button>
+                <button className="nes-btn is-primary">Catch</button>
               </form>
             )}
           </div>
