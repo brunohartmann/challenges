@@ -58,15 +58,19 @@ function App() {
         }}
       >
         {status === STATUS.PLAYING && (
-          <figure
+          <img
+            src={`https://icongr.am/jam/bug-f.svg?size=${TARGET_SIZE}$&color=56dc4c`}
+            alt="target"
             onClick={handleTargetClick}
             style={{
+              cursor: 'pointer',
               transform: `scale(${getScale(score)})`,
               top: `${position.y}%`,
               left: `${position.x}%`
             }}
             className="target"
           />
+          // <img src="https://icongr.am/jam/bug-f.svg?size=120&color=56dc4c" alt="target" />
         )}
       </section>
       <footer>
