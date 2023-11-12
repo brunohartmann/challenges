@@ -1,25 +1,9 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import Confetti from 'react-confetti';
 
-const GRID_SIZE = 10;
-const MINES = 12;
-const BOMB = '💣';
-const FLAG = '🚩';
-const SUNGLASSES = '😎';
-const DEAD = '😵';
-const SMILE = '🙂';
-
-type Cell = {
-  value: number | string;
-  isVisible: boolean;
-  isFlagged: boolean;
-};
-
-enum Status {
-  PLAYING = 'playing',
-  WON = 'won',
-  LOST = 'lost'
-}
+import { BOMB, DEAD, FLAG, GRID_SIZE, MINES, SMILE, SUNGLASSES } from './constants';
+import reducer, { initialState } from './reducers/reducer';
+import { ActionType, Cell, Status } from './types';
 
 const BOARD: Cell[][] = Array.from({ length: GRID_SIZE }, () =>
   Array.from({ length: GRID_SIZE }, () => ({ value: 0, isVisible: false, isFlagged: false }))
@@ -39,20 +23,6 @@ function getCellValue(status: Status, cell: Cell) {
   }
 
   return cell.value !== 0 ? cell.value : '';
-}
-
-function revealCell(board: Cell[][], row: number, cell: number) {
-  if (isCellInbounds(row, cell) && !board[row][cell].isVisible) {
-    board[row][cell].isVisible = true;
-    board[row][cell].isFlagged = false;
-    if (board[row][cell].value === 0) {
-      for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
-        for (let cellOffset = -1; cellOffset <= 1; cellOffset++) {
-          revealCell(board, row + rowOffset, cell + cellOffset);
-        }
-      }
-    }
-  }
 }
 
 for (let i = 0; i < MINES; i++) {
@@ -75,38 +45,17 @@ for (let i = 0; i < MINES; i++) {
     }
   }
 }
+const appName = 'Minesweeper';
 
 function App() {
-  const appName = 'Minesweeper';
-  const [status, setStatus] = useState<Status>(Status.PLAYING);
-  const [board, setBoard] = useState<Cell[][]>(BOARD);
-  const [lastClickedCell, setLastClickedCell] = useState<string>('');
+  const [{ board, status, lastClickedCell }, dispatch] = useReducer(reducer, { ...initialState, board: BOARD });
 
-  function handleCellClick(clickedRow: number, clickedCell: number) {
-    let clonedBoard = [...board];
-    const cellId = getCellId(clickedRow, clickedCell);
-    const cellValue = board[clickedRow][clickedCell].value;
-
-    if (cellValue === BOMB) {
-      setBoard(clonedBoard);
-      setLastClickedCell(cellId);
-      setStatus(Status.LOST);
-    } else {
-      revealCell(clonedBoard, clickedRow, clickedCell);
-      setBoard(clonedBoard);
-      if (
-        clonedBoard.reduce((res, row) => res + row.filter((cell) => cell.isVisible).length, 0) ===
-        GRID_SIZE ** 2 - MINES
-      ) {
-        setStatus(Status.WON);
-      }
-    }
+  function handleCellClick(row: number, cell: number) {
+    dispatch({ type: ActionType.REVEAL_CELL, payload: { row, cell } });
   }
 
-  function handleToggleFlag(clickedRow: number, clickedCell: number) {
-    const clonedBoard = [...board];
-    clonedBoard[clickedRow][clickedCell].isFlagged = true;
-    setBoard(clonedBoard);
+  function handleToggleFlag(row: number, cell: number) {
+    dispatch({ type: ActionType.FLAG_CELL, payload: { row, cell } });
   }
 
   return (
@@ -134,7 +83,7 @@ function App() {
                     <div
                       key={cellId}
                       className={`flex h-8 w-8 justify-center items-center border ${
-                        cellId === lastClickedCell ? 'bg-red-600' : ''
+                        rowIndex === lastClickedCell.row && cellIndex === lastClickedCell.cell ? 'bg-red-600' : ''
                       }`}
                     >
                       {getCellValue(status, cell)}
