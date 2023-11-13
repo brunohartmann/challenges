@@ -1,4 +1,4 @@
-import { BOMB, FLAG } from '../../constants';
+import { BOMB, CROSS, FLAG } from '../../constants';
 import { Cell, Status } from '../../types';
 
 type MineCellProps = {
@@ -16,6 +16,9 @@ type MineCellProps = {
 };
 
 function getCellValue(status: Status, cell: Partial<Cell>) {
+  if (status === Status.LOST && cell.value !== BOMB && cell.isFlagged) {
+    return CROSS;
+  }
   if ((status === Status.WON && cell.value === BOMB) || cell.isFlagged) {
     return FLAG;
   }

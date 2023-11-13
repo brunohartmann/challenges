@@ -1,13 +1,20 @@
 export enum Status {
+  NEW_GAME = 'new_game',
   PLAYING = 'playing',
   WON = 'won',
   LOST = 'lost'
 }
 
 export enum ActionType {
+  NEW_GAME = 'new_game',
   REVEAL_CELL = 'reveal_cell',
-  FLAG_CELL = 'flag_cell',
-  NEW_GAME = 'new_game'
+  FLAG_CELL = 'flag_cell'
+}
+
+export enum Difficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard'
 }
 
 export type Action = {
@@ -28,4 +35,5 @@ export type GameState = {
     row: number | null;
     cell: number | null;
   };
+  difficulty: Difficulty;
 };
