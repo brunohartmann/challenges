@@ -1,7 +1,8 @@
 import { useReducer } from 'react';
 import Confetti from 'react-confetti';
 
-import { BOMB, DEAD, FLAG, GRID_SIZE, MINES, SMILE, SUNGLASSES } from './constants';
+import { MineCell } from './components/mine-cell';
+import { BOMB, DEAD, GRID_SIZE, MINES, SMILE, SUNGLASSES } from './constants';
 import reducer, { initialState } from './reducers/reducer';
 import { ActionType, Cell, Status } from './types';
 
@@ -15,14 +16,6 @@ function getCellId(rowIndex: number, cellIndex: number) {
 
 function isCellInbounds(row: number, cell: number) {
   return row >= 0 && row < GRID_SIZE && cell >= 0 && cell < GRID_SIZE;
-}
-
-function getCellValue(status: Status, cell: Cell) {
-  if ((status === Status.WON && cell.value === BOMB) || cell.isFlagged) {
-    return FLAG;
-  }
-
-  return cell.value !== 0 ? cell.value : '';
 }
 
 for (let i = 0; i < MINES; i++) {
@@ -45,6 +38,7 @@ for (let i = 0; i < MINES; i++) {
     }
   }
 }
+
 const appName = 'Minesweeper';
 
 function App() {
@@ -67,7 +61,7 @@ function App() {
           {status === Status.LOST && <p className="text-2xl text-red-500">You lost!</p>}
           {status === Status.WON && <p className="text-2xl text-green-500">You won!</p>}
           <button
-            className="flex h-8 w-8 justify-center items-center bg-slate-700 hover:bg-slate-800 border border-slate-200 rounded-sm"
+            className="flex h-8 w-8 justify-center items-center bg-gray-400 hover:bg-gray-300 border-4 border-t-gray-200 border-l-gray-200 border-r-gray-500 border-b-gray-500"
             onClick={() => window.location.reload()}
           >
             {status === Status.LOST ? DEAD : status === Status.WON ? SUNGLASSES : SMILE}
@@ -76,38 +70,20 @@ function App() {
         <section className="flex flex-col items-center">
           {board.map((row, rowIndex) => (
             <article key={rowIndex} className="flex">
-              {row.map((cell, cellIndex) => {
-                const cellId = getCellId(rowIndex, cellIndex);
-                if (status !== Status.PLAYING || cell.isVisible) {
-                  return (
-                    <div
-                      key={cellId}
-                      className={`flex h-8 w-8 justify-center items-center border ${
-                        rowIndex === lastClickedCell.row && cellIndex === lastClickedCell.cell ? 'bg-red-600' : ''
-                      }`}
-                    >
-                      {getCellValue(status, cell)}
-                    </div>
-                  );
-                }
-                return (
-                  <button
-                    key={cellId}
-                    className={`flex bg-slate-${
-                      cell.isFlagged ? '800' : '700'
-                    } hover:bg-slate-800 h-8 w-8 justify-center items-center border`}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      handleToggleFlag(rowIndex, cellIndex);
-                    }}
-                    onClick={() => {
-                      status === Status.PLAYING && handleCellClick(rowIndex, cellIndex);
-                    }}
-                  >
-                    {cell.isFlagged ? FLAG : ''}
-                  </button>
-                );
-              })}
+              {row.map((cell, cellIndex) => (
+                <MineCell
+                  key={getCellId(rowIndex, cellIndex)}
+                  status={status}
+                  onRevealCell={handleCellClick}
+                  onToggleFlag={handleToggleFlag}
+                  cellSettings={{
+                    row: rowIndex,
+                    cell: cellIndex,
+                    isLastClickedCell: lastClickedCell.row === rowIndex && lastClickedCell.cell === cellIndex,
+                    ...cell
+                  }}
+                />
+              ))}
             </article>
           ))}
         </section>
