@@ -15,12 +15,12 @@ const appName = 'Minesweeper';
 function App() {
   const [{ board, status, lastClickedCell }, dispatch] = useReducer(reducer, initialState);
 
-  function handleCellClick(row: number, cell: number) {
-    dispatch({ type: ActionType.REVEAL_CELL, payload: { row, cell } });
+  function handleCellClick(row: number, col: number) {
+    dispatch({ type: ActionType.REVEAL_CELL, payload: { row, col } });
   }
 
-  function handleToggleFlag(row: number, cell: number) {
-    dispatch({ type: ActionType.FLAG_CELL, payload: { row, cell } });
+  function handleToggleFlag(row: number, col: number) {
+    dispatch({ type: ActionType.FLAG_CELL, payload: { row, col } });
   }
 
   function handleStartClick(difficulty: Difficulty) {
@@ -73,17 +73,17 @@ function App() {
           <section className="flex flex-col items-center">
             {board.map((row, rowIndex) => (
               <article key={rowIndex} className="flex">
-                {row.map((cell, cellIndex) => (
+                {row.map((col, colIndex) => (
                   <MineCell
-                    key={getCellId(rowIndex, cellIndex)}
+                    key={getCellId(rowIndex, colIndex)}
                     status={status}
                     onRevealCell={handleCellClick}
                     onToggleFlag={handleToggleFlag}
                     cellSettings={{
                       row: rowIndex,
-                      cell: cellIndex,
-                      isLastClickedCell: lastClickedCell.row === rowIndex && lastClickedCell.cell === cellIndex,
-                      ...cell
+                      col: colIndex,
+                      isLastClickedCell: lastClickedCell.row === rowIndex && lastClickedCell.col === colIndex,
+                      ...col
                     }}
                   />
                 ))}

@@ -3,11 +3,11 @@ import { Cell, Status } from '../../types';
 
 type MineCellProps = {
   status: Status;
-  onRevealCell: (row: number, cell: number) => void;
-  onToggleFlag: (row: number, cell: number) => void;
+  onRevealCell: (row: number, col: number) => void;
+  onToggleFlag: (row: number, col: number) => void;
   cellSettings: {
     row: number;
-    cell: number;
+    col: number;
     isLastClickedCell: boolean;
     isFlagged: boolean;
     isVisible: boolean;
@@ -42,7 +42,7 @@ function getValueColor(value: string | number) {
 }
 
 function MineCell({ status, onRevealCell, onToggleFlag, cellSettings }: MineCellProps) {
-  const { row, cell, isFlagged, isVisible, isLastClickedCell, value } = cellSettings;
+  const { row, col, isFlagged, isVisible, isLastClickedCell, value } = cellSettings;
   if (status !== Status.PLAYING || isVisible) {
     return (
       <div
@@ -59,10 +59,10 @@ function MineCell({ status, onRevealCell, onToggleFlag, cellSettings }: MineCell
       className="flex h-8 w-8 justify-center items-center bg-gray-400 hover:bg-gray-300 border-4 border-t-gray-200 border-l-gray-200 border-r-gray-500 border-b-gray-500"
       onContextMenu={(e) => {
         e.preventDefault();
-        onToggleFlag(row, cell);
+        onToggleFlag(row, col);
       }}
       onClick={() => {
-        status === Status.PLAYING && onRevealCell(row, cell);
+        status === Status.PLAYING && onRevealCell(row, col);
       }}
     >
       {isFlagged ? FLAG : ''}

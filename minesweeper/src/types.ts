@@ -33,7 +33,7 @@ export type GameState = {
   status: Status;
   lastClickedCell: {
     row: number | null;
-    cell: number | null;
+    col: number | null;
   };
   difficulty: Difficulty;
 };

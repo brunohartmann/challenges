@@ -5,7 +5,7 @@ export const initialState: GameState = {
   board: [],
   lastClickedCell: {
     row: null,
-    cell: null
+    col: null
   },
   status: Status.NEW_GAME,
   difficulty: Difficulty.EASY
@@ -26,18 +26,18 @@ const difficultyConfig = {
   }
 };
 
-function isCellInbounds(row: number, cell: number, gridSize: number) {
-  return row >= 0 && row < gridSize && cell >= 0 && cell < gridSize;
+function isCellInbounds(row: number, col: number, gridSize: number) {
+  return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
 }
 
-function revealCell(board: Cell[][], row: number, cell: number, gridSize: number) {
-  if (isCellInbounds(row, cell, gridSize) && !board[row][cell].isVisible) {
-    board[row][cell].isVisible = true;
-    board[row][cell].isFlagged = false;
-    if (board[row][cell].value === 0) {
+function revealCell(board: Cell[][], row: number, col: number, gridSize: number) {
+  if (isCellInbounds(row, col, gridSize) && !board[row][col].isVisible) {
+    board[row][col].isVisible = true;
+    board[row][col].isFlagged = false;
+    if (board[row][col].value === 0) {
       for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
-        for (let cellOffset = -1; cellOffset <= 1; cellOffset++) {
-          revealCell(board, row + rowOffset, cell + cellOffset, gridSize);
+        for (let colOffset = -1; colOffset <= 1; colOffset++) {
+          revealCell(board, row + rowOffset, col + colOffset, gridSize);
         }
       }
     }
@@ -52,20 +52,20 @@ function createBoard(difficulty: Difficulty): Cell[][] {
 
   for (let i = 0; i < mines; i++) {
     let randomRow = Math.floor(Math.random() * gridSize);
-    let randomCell = Math.floor(Math.random() * gridSize);
+    let randomCol = Math.floor(Math.random() * gridSize);
 
-    while (board[randomRow][randomCell].value === BOMB) {
+    while (board[randomRow][randomCol].value === BOMB) {
       randomRow = Math.floor(Math.random() * gridSize);
-      randomCell = Math.floor(Math.random() * gridSize);
+      randomCol = Math.floor(Math.random() * gridSize);
     }
-    board[randomRow][randomCell].value = BOMB;
+    board[randomRow][randomCol].value = BOMB;
     for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
-      for (let cellOffset = -1; cellOffset <= 1; cellOffset++) {
+      for (let colOffset = -1; colOffset <= 1; colOffset++) {
         const row = randomRow + rowOffset;
-        const cell = randomCell + cellOffset;
+        const col = randomCol + colOffset;
 
-        if (isCellInbounds(row, cell, gridSize) && board[row][cell].value !== BOMB) {
-          board[row][cell].value = (board[row][cell].value as number) + 1;
+        if (isCellInbounds(row, col, gridSize) && board[row][col].value !== BOMB) {
+          board[row][col].value = (board[row][col].value as number) + 1;
         }
       }
     }
@@ -87,19 +87,19 @@ function reducer(state = initialState, action: Action) {
     const board = [...state.board];
     let newStatus = state.status;
     let lastClickedCell = state.lastClickedCell;
-    const { row, cell } = action.payload;
-    const cellValue = board[row][cell].value;
+    const { row, col } = action.payload;
+    const cellValue = board[row][col].value;
     if (cellValue === BOMB) {
       lastClickedCell = {
         row,
-        cell
+        col
       };
-      board[row][cell].isFlagged = false;
+      board[row][col].isFlagged = false;
       newStatus = Status.LOST;
     } else {
       const { gridSize, mines } = difficultyConfig[state.difficulty];
-      revealCell(board, row, cell, gridSize);
-      if (board.reduce((res, row) => res + row.filter((cell) => cell.isVisible).length, 0) === gridSize ** 2 - mines) {
+      revealCell(board, row, col, gridSize);
+      if (board.reduce((res, row) => res + row.filter((col) => col.isVisible).length, 0) === gridSize ** 2 - mines) {
         newStatus = Status.WON;
       }
     }
@@ -110,9 +110,9 @@ function reducer(state = initialState, action: Action) {
       lastClickedCell
     };
   } else if (action.type === ActionType.FLAG_CELL) {
-    const { row, cell } = action.payload;
+    const { row, col } = action.payload;
     const board = [...state.board];
-    board[row][cell].isFlagged = !board[row][cell].isFlagged;
+    board[row][col].isFlagged = !board[row][col].isFlagged;
     return {
       ...state,
       board
